@@ -14,7 +14,7 @@ number=[1] #the actual counting number
 names_path="D:/Dropbox/Dropbox/2_BTSync Sync/04_Uni/02_MA Arbeit/ODA_2014_names_test.csv"
 names=pd.read_csv(names_path, encoding='latin1',sep=';')
 
-for y in range(0,6):#creating the urls, must be done in loop before: from 0 works
+for y in range(0,len(names)):#creating the urls, must be done in loop before: from 0 works
     url_t="https://www.google.at/search?q=site%3Awww.care.at+"+names['rename'][y]
     url.append(url_t)
     
@@ -39,5 +39,3 @@ writer=pd.ExcelWriter('D:/Dropbox/Dropbox/2_BTSync Sync/04_Uni/02_MA Arbeit/outp
 all_df.to_excel(writer,'Sheet1')
 writer.save()
 print(all_df)
-#undone printing
-#wusel dusel
