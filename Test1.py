@@ -3,6 +3,7 @@ Created on 06.07.2016
 
 @author: geri
 '''
+#this version is for desktop pcs
 import scrapy #the crawler import
 import re #for finding patterns
 import pandas as pd #for handling tables
