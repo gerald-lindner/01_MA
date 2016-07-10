@@ -38,5 +38,6 @@ all_df=pd.concat(frames,axis=1,join='outer')
 writer=pd.ExcelWriter('D:/Dropbox/Dropbox/2_BTSync Sync/04_Uni/02_MA Arbeit/output.xlsx')
 all_df.to_excel(writer,'Sheet1')
 writer.save()
-#print(all_df)
+print(all_df)
 #undone printing
+#wusel dusel
