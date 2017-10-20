@@ -6,6 +6,7 @@ Created on 06.07.2016
 #tips: response.status 
 #C:\Program Files\Python35\Lib\site-packages\scrapy-1.1.0-py3.5.egg\scrapy\settings
 import requests #no idea what it does
+import time
 from stem import Signal
 import logging
 import os #go get paths
@@ -32,7 +33,15 @@ all_urls=[]
 for y in range(0,100):
     all_urls.append(url_1+url+"+"+cnames_out[y])
     
-
+def wait_id():
+    if controller.is_newnym_available()==False:
+        print (controller.is_newnym_available())
+        print (controller.get_newnym_wait())
+        controller.signal(DUMP)
+        time.sleep(20)
+        wait_id()
+    else:
+        print ("JETZT")
 #start of tor 
 from stem.control import Controller
 with Controller.from_port(port = 9051) as controller:
@@ -40,29 +49,40 @@ with Controller.from_port(port = 9051) as controller:
     controller.signal(Signal.NEWNYM)
     controller.close()
 SCRAPY_SETTINGS_MODULE="ma_setting.py"
+
 class googlengo(scrapy.Spider): #scrapy class, contains everything
-        handle_httpstatus_list = [301, 302]
+        #handle_httpstatus_list = [301, 302]
+        handle_httpstatus_list = [301,302]
         name = 'googlengo'
         start_urls = all_urls
         custom_settings = {
-            'REDIRECT_ENABLED': False
+            'REDIRECT_ENABLED':False
         }
         def parse(self,response):
             i=0;
             print(response.status)
-            if response.status==302:
-                print ("NOPE DI DOPE ")
-#                 url_out.append[cnames_out[i]]
-#                 number.append("NA")
-            else:
-                number_t=response.xpath('//div[@id="resultStats"]/text()').extract()
-                number_t=re.findall("(\d*) ",number_t[0])
-                number.append(number_t[0])
-                url_out.append(cnames_out[i])
+            def repeating():
+                if response.status==302:
+                    print ("NOPE DI DOPE ")
+                    from stem.control import Controller
+                    with Controller.from_port(port = 9051) as controller:
+                        controller.authenticate(password = 'my_password')
+                        controller.signal(Signal.NEWNYM)
+                        controller.close()
+                        time.sleep(30)
+                        parse(self,response)
+    
+                else:
+                    number_t=response.xpath('//div[@id="resultStats"]/text()').extract()
+                    number_t=re.findall("(\d*) ",number_t[0])
+                    number.append(number_t[0])
+                    url_out.append(cnames_out[i])
+                    print("GEHT")
 #             except:
 #                 print("FUNKT NICHT")
 #                 url_out.append[cnames_out[i]]
 #                 number.append("NA")               
+            repeating()
             i=i+1
 process = CrawlerProcess()
 process.crawl(googlengo)
